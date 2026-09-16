@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Profile README Generator</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // تنظیمات دلخواه برای Tailwind (فعال‌سازی Dark Mode با کلاس)
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0d1117',
+                        darkPanel: '#161b22',
+                        darkBorder: '#30363d'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome برای آیکون‌ها -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-darkBg dark:text-gray-200 min-h-screen font-sans antialiased">
+    
+    <!-- هدر ساده برای تست ساختار -->
+    <header class="border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkPanel px-6 py-4">
+        <h1 class="text-2xl font-bold flex items-center gap-2">
+            <i class="fa-brands fa-github"></i>
+            Profile README Generator
+        </h1>
+    </header>
+
+    <!-- کانتینر اصلی که در مرحله بعد دو ستونه می‌شود -->
+    <main class="p-6">
+        <p class="text-gray-500 dark:text-gray-400">ساختار اولیه با موفقیت ساخته شد. آماده برای مرحله بعدی!</p>
+    </main>
+
+    <!-- اتصال فایل جاوااسکریپت -->
+    <script src="script.js"></script>
+</body>
+</html>
