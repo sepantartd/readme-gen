@@ -8,7 +8,6 @@
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // تنظیمات دلخواه برای Tailwind (فعال‌سازی Dark Mode با کلاس)
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -25,23 +24,90 @@
 
     <!-- FontAwesome برای آیکون‌ها -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- استایل سفارشی برای زیباتر شدن اسکرول‌بارها -->
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #30363d;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-darkBg dark:text-gray-200 min-h-screen font-sans antialiased">
+<body class="bg-gray-50 text-gray-900 dark:bg-darkBg dark:text-gray-200 h-screen font-sans antialiased flex flex-col overflow-hidden">
     
-    <!-- هدر ساده برای تست ساختار -->
-    <header class="border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkPanel px-6 py-4">
-        <h1 class="text-2xl font-bold flex items-center gap-2">
-            <i class="fa-brands fa-github"></i>
-            Profile README Generator
-        </h1>
+    <!-- هدر سایت -->
+    <header class="border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkPanel px-6 py-4 shrink-0">
+        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+                <i class="fa-brands fa-github text-gray-800 dark:text-white"></i>
+                Profile README Generator
+            </h1>
+            
+            <!-- دکمه ریست کل فرم -->
+            <button id="resetBtn" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 rounded-md transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span class="hidden md:inline">Reset</span>
+            </button>
+        </div>
     </header>
 
-    <!-- کانتینر اصلی که در مرحله بعد دو ستونه می‌شود -->
-    <main class="p-6">
-        <p class="text-gray-500 dark:text-gray-400">ساختار اولیه با موفقیت ساخته شد. آماده برای مرحله بعدی!</p>
+    <!-- بخش اصلی: گرید دو ستونه -->
+    <main class="flex-1 p-4 md:p-6 max-w-[1800px] w-full mx-auto grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-0">
+        
+        <!-- ستون سمت چپ: فرم اطلاعات -->
+        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
+            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-pen-to-square text-blue-500"></i>
+                Enter Your Details
+            </div>
+            
+            <!-- محتوای فرم (اسکرول مجزا) -->
+            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar" id="form-container">
+                <div class="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 space-y-3 border-2 border-dashed border-gray-200 dark:border-darkBorder rounded-lg p-10">
+                    <i class="fa-solid fa-clipboard-list text-4xl"></i>
+                    <p>در مرحله ۳، فرم ورود اطلاعات اینجا قرار می‌گیرد...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ستون سمت راست: پیش‌نمایش -->
+        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
+            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-green-500"></i>
+                    Live Preview
+                </div>
+                <!-- دکمه‌های کپی و دانلود -->
+                <div class="flex gap-2">
+                    <button class="text-xs md:text-sm px-3 py-1.5 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-copy"></i> <span class="hidden md:inline">Copy Markdown</span>
+                    </button>
+                    <button class="text-xs md:text-sm px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-download"></i> <span class="hidden md:inline">Download .md</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- محتوای پیش‌نمایش (اسکرول مجزا) -->
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-[#0d1117]" id="preview-container">
+                <div class="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 space-y-3 border-2 border-dashed border-gray-200 dark:border-darkBorder rounded-lg p-10">
+                    <i class="fa-brands fa-markdown text-4xl"></i>
+                    <p>در مرحله ۴، پیش‌نمایش زنده Markdown اینجا ظاهر می‌شود...</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- اتصال فایل جاوااسکریپت -->
     <script src="script.js"></script>
 </body>
 </html>
