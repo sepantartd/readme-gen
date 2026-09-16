@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('readme-form');
     const formInputs = document.querySelectorAll('#readme-form input, #readme-form textarea, #readme-form select');
     const previewContainer = document.getElementById('preview-container');
+    
+    // دکمه‌ها
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
-    // این متغیر رشته نهایی مارک‌داون را در خود نگه می‌دارد تا در مراحل بعد کپی/دانلود شود
+    // این متغیر رشته نهایی مارک‌داون را در خود نگه می‌دارد
     window.rawMarkdown = "";
 
+    // تابع سازنده مارک‌داون (بدون تغییر نسبت به مرحله قبل)
     function generateMarkdown() {
-        // ۱. دریافت مقادیر از فرم
         const name = document.getElementById('name').value.trim();
         const title = document.getElementById('title').value.trim();
         const about = document.getElementById('about').value.trim();
@@ -23,10 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const projLink = document.getElementById('proj-link').value.trim();
         const projDesc = document.getElementById('proj-desc').value.trim();
 
-        // دریافت مهارت‌های تیک‌خورده
         const skills = Array.from(document.querySelectorAll('.skill-checkbox:checked')).map(cb => cb.value);
 
-        // ۲. ساخت رشته مارک‌داون
         let md = "";
 
         if (name) md += `<h1 align="center">Hi 👋, I'm ${name}</h1>\n`;
@@ -36,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (skills.length > 0) {
             md += `## 🚀 Skills\n<p align="left">\n`;
-            // رنگ‌ها و آیکون‌های اختصاصی برای شیلدها (Badges)
             const badges = { python: "3776AB", cpp: "00599C", javascript: "F7DF1E", html5: "E34F26", react: "20232A", linux: "FCC624" };
             const logos = { cpp: 'c%2B%2B', html5: 'html5', react: 'react', python: 'python', javascript: 'javascript', linux: 'linux' };
             
@@ -61,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
             md += `</p>\n\n`;
         }
 
-        // نمایش آمارهای گیت‌هاب (فقط اگر یوزرنیم وارد شده باشد)
         if (github && (showCards || showLangs || showStreak)) {
             md += `## 📊 GitHub Stats\n<div align="left">\n`;
             if (showCards) {
@@ -71,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 md += `  <img src="https://github-readme-streak-stats.herokuapp.com/?user=${github}&theme=${theme}" alt="GitHub Streak" />\n`;
             }
             if (showLangs) {
-                // تگ <br> برای رفتن به خط بعد
                 md += `  <br><br>\n  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${github}&layout=compact&theme=${theme}" alt="Top Languages" />\n`;
             }
             md += `</div>\n\n`;
@@ -82,8 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePreview() {
         const markdownText = generateMarkdown();
-        // ذخیره مارک‌داون برای دکمه‌های کپی و دانلود
-        window.rawMarkdown = markdownText;
+        window.rawMarkdown = markdownText; // ذخیره برای دانلود و کپی
         
         if (!markdownText) {
             previewContainer.innerHTML = `
@@ -95,16 +95,72 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // جادوی اصلی: رندر مارک‌داون به HTML
         previewContainer.innerHTML = `<div class="markdown-body">\n${marked.parse(markdownText)}\n</div>`;
     }
 
-    // هر بار که کاربر تایپ کند یا کلیک کند، پیش‌نمایش ساخته می‌شود
     formInputs.forEach(input => {
         input.addEventListener('input', updatePreview);
         input.addEventListener('change', updatePreview);
     });
 
-    // یک‌بار اجرای تابع برای نمایش مقادیر پیش‌فرض (مثل تیک‌های مهارت‌ها)
+    // -------------------------------------------------------------
+    // کدهای جدید مرحله ۵: قابلیت‌های کپی، دانلود و ریست
+    // -------------------------------------------------------------
+
+    // ۱. قابلیت کپی در کلیپ‌بورد
+    copyBtn.addEventListener('click', () => {
+        if (!window.rawMarkdown) {
+            alert("فایلی برای کپی وجود ندارد! لطفاً فرم را پر کنید.");
+            return;
+        }
+        
+        // استفاده از API مدرن Clipboard
+        navigator.clipboard.writeText(window.rawMarkdown).then(() => {
+            // تغییر موقت دکمه برای نمایش پیام موفقیت
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fa-solid fa-check text-green-500"></i> <span class="hidden md:inline text-green-600 dark:text-green-400 font-bold">Copied!</span>';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+            }, 2000); // بازگشت به حالت اول بعد از ۲ ثانیه
+        }).catch(err => {
+            console.error("خطا در کپی: ", err);
+            alert("مرورگر شما از قابلیت کپی پشتیبانی نمی‌کند.");
+        });
+    });
+
+    // ۲. قابلیت دانلود فایل README.md
+    downloadBtn.addEventListener('click', () => {
+        if (!window.rawMarkdown) {
+            alert("فایلی برای دانلود وجود ندارد! لطفاً فرم را پر کنید.");
+            return;
+        }
+
+        // ساخت یک فایل (Blob) در حافظه مرورگر
+        const blob = new Blob([window.rawMarkdown], { type: "text/markdown" });
+        const url = URL.createObjectURL(blob);
+        
+        // ساخت یک تگ لینک مجازی و کلیک کردن روی آن
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "README.md"; // نام فایل خروجی
+        document.body.appendChild(a);
+        a.click();
+        
+        // پاکسازی حافظه
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // ۳. قابلیت ریست کردن فرم
+    resetBtn.addEventListener('click', () => {
+        if(confirm("آیا مطمئن هستید که می‌خواهید تمام اطلاعات فرم را پاک کنید؟")) {
+            form.reset();
+            updatePreview(); // رندر مجدد پیش‌نمایش (که حالا خالی می‌شود)
+        }
+    });
+
+    // اجرای اولیه هنگام لود شدن صفحه
     updatePreview();
 });
+            
