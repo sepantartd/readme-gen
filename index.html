@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Profile README Generator</title>
-    
-    <!-- Tailwind CSS (CDN) -->
+    <title>Pro GitHub Profile README Generator</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Tailwind Config for Dark Mode and Custom Colors -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -14,403 +18,465 @@
                 extend: {
                     colors: {
                         darkBg: '#0d1117',
-                        darkPanel: '#161b22',
-                        darkBorder: '#30363d'
+                        darkCard: '#161b22',
+                        darkBorder: '#30363d',
+                        primary: '#2f81f7'
                     }
                 }
             }
         }
     </script>
-
-    <!-- FontAwesome برای آیکون‌ها -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- استایل‌های سفارشی -->
     <style>
-        /* ۱. اسکرول‌بارها */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #30363d; }
-
-        /* ۲. استایل‌های اختصاصی برای رندر Markdown شبیه به گیت‌هاب */
-        .markdown-body { line-height: 1.6; color: #24292f; }
-        .dark .markdown-body { color: #c9d1d9; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
-            border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; margin-top: 24px; margin-bottom: 16px; font-weight: 600;
-        }
-        .dark .markdown-body h1, .dark .markdown-body h2, .dark .markdown-body h3 { border-bottom-color: #21262d; }
-        .markdown-body p { margin-bottom: 16px; }
-        .markdown-body img { max-width: 100%; box-sizing: content-box; margin: 2px; }
-        .markdown-body blockquote {
-            padding: 0 1em; color: #57606a; border-left: 0.25em solid #d0d7de; margin: 0 0 16px 0;
-        }
-        .dark .markdown-body blockquote { color: #8b949e; border-left-color: #30363d; }
+        /* Markdown Preview Styles */
+        .markdown-body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; line-height: 1.5; word-wrap: break-word; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-weight: 600; margin-bottom: 1rem; margin-top: 1.5rem; }
+        .markdown-body h1 { font-size: 2em; border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; }
+        .markdown-body h2 { font-size: 1.5em; border-bottom: 1px solid #d0d7de; padding-bottom: 0.3em; }
+        .markdown-body p { margin-bottom: 1rem; }
         .markdown-body a { color: #0969da; text-decoration: none; }
-        .dark .markdown-body a { color: #58a6ff; }
         .markdown-body a:hover { text-decoration: underline; }
-    </style>
+        .markdown-body img { max-width: 100%; box-sizing: content-box; background-color: transparent; }
+        .markdown-body blockquote { padding: 0 1em; color: #656d76; border-left: 0.25em solid #d0d7de; margin: 0 0 16px 0; }
+        
+        /* Dark Mode Markdown Styles */
+        .dark .markdown-body h1, .dark .markdown-body h2 { border-bottom-color: #21262d; }
+        .dark .markdown-body a { color: #58a6ff; }
+        .dark .markdown-body blockquote { color: #8b949e; border-left-color: #30363d; }
 
-    <!-- کتابخانه Marked.js برای تبدیل مارک‌داون به HTML -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-darkBg dark:text-gray-200 h-screen font-sans antialiased flex flex-col overflow-hidden">
-    
-    <!-- هدر سایت -->
-    <header class="border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkPanel px-6 py-4 shrink-0">
-        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-                <i class="fa-brands fa-github text-gray-800 dark:text-white"></i>
-                Profile README Generator
-            </h1>
-            
-            <!-- دکمه ریست کل فرم -->
-            <button id="resetBtn" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 rounded-md transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-rotate-right"></i>
-                <span class="hidden md:inline">Reset</span>
-            </button>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-200 transition-colors duration-200 min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-white dark:bg-darkCard shadow-sm dark:border-b dark:border-darkBorder sticky top-0 z-40 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-primary text-white p-2 rounded-lg">
+                    <i class="fa-brands fa-github text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold dark:text-white leading-tight">README Builder Pro</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Generate awesome profile pages</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <button id="helpBtn" class="hidden md:flex items-center text-sm text-gray-600 dark:text-gray-300 hover:text-primary transition-colors">
+                    <i class="fa-regular fa-circle-question mr-1"></i> How to use
+                </button>
+                <div class="h-6 w-px bg-gray-300 dark:bg-gray-700 hidden md:block"></div>
+                <button id="themeToggleBtn" class="p-2 w-10 h-10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none rounded-full transition-colors">
+                    <i class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <button id="resetBtn" class="p-2 w-10 h-10 md:w-auto md:px-4 md:py-2 flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors font-medium">
+                    <i class="fa-solid fa-trash-can md:mr-2"></i> <span class="hidden md:inline">Reset Form</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- بخش اصلی: گرید دو ستونه -->
-    <main class="flex-1 p-4 md:p-6 max-w-[1800px] w-full mx-auto grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-0">
+    <!-- Main Workspace -->
+    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow h-[calc(100vh-140px)]">
         
-        <!-- ستون سمت چپ: فرم اطلاعات -->
-        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
-            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center gap-2 shrink-0">
-                <i class="fa-solid fa-pen-to-square text-blue-500"></i>
-                Enter Your Details
-            </div>
-            
-            <!-- محتوای فرم (اسکرول مجزا) -->
-            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar" id="form-container">
-                
-                <form id="readme-form" class="space-y-8">
+        <!-- Form Settings (Left Panel - Takes 5 columns) -->
+        <div class="lg:col-span-5 bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-200 dark:border-darkBorder overflow-y-auto p-1 h-full transition-colors duration-200 relative">
+            <div class="p-5 space-y-10">
+                <form id="readme-form" class="space-y-10">
                     
-                    <!-- ۱. اطلاعات شخصی -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">1. Personal Info</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Section 1: Header & Introduction -->
+                    <section class="animate-fade-in">
+                        <div class="flex items-center border-b border-gray-200 dark:border-darkBorder pb-3 mb-5">
+                            <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-2 rounded-lg mr-3">
+                                <i class="fa-regular fa-id-card text-lg"></i>
+                            </div>
+                            <h2 class="text-xl font-bold">Introduction</h2>
+                        </div>
+                        <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                                <input type="text" id="name" placeholder="e.g. John Doe" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Greeting / Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="name" placeholder="Hi 👋, I'm Sepanta" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                                <input type="text" id="title" placeholder="e.g. Full Stack Developer" value="Full Stack Developer" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Catchphrase / Subtitle</label>
+                                <input type="text" id="title" placeholder="A passionate Full Stack Developer from Iran" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">About Me (Bio)</label>
+                                <textarea id="about" rows="4" placeholder="Write a brief introduction about who you are, what you do, and your passion..." class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-shadow"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">🔭 Currently working on</label>
+                                    <input type="text" id="working-on" placeholder="Project name or topic" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">🌱 Currently learning</label>
+                                    <input type="text" id="learning" placeholder="Framework or language" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">💬 Ask me about</label>
+                                    <input type="text" id="askme" placeholder="Topics you know well" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">📫 Contact Email</label>
+                                    <input type="email" id="email" placeholder="example@mail.com" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">About Me</label>
-                            <textarea id="about" rows="3" placeholder="I am a passionate developer working on awesome projects..." class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white"></textarea>
-                        </div>
-                    </div>
-                
-                    <!-- ۲. مهارت‌ها -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">2. Skills</h3>
-                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3" id="skills-container">
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="python" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-python text-blue-500"></i> Python</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="cpp" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                                <span class="text-sm dark:text-gray-300"><i class="fa-solid fa-c text-blue-600"></i> C++</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="javascript" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="html5" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="react" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-react text-cyan-400"></i> React</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="linux" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-linux text-gray-800 dark:text-gray-100"></i> Linux</span>
-                            </label>
-                        </div>
-                    </div>
-                
-                    <!-- ۳. لینک‌های شبکه‌های اجتماعی -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">3. Social Links</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
-                                <span class="px-3 py-2 text-gray-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-github"></i></span>
-                                <input type="text" id="social-github" placeholder="GitHub Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
+                    </section>
+
+                    <!-- Section 2: Skills & Technologies (Massive Checkbox Area) -->
+                    <section>
+                        <div class="flex items-center border-b border-gray-200 dark:border-darkBorder pb-3 mb-5">
+                            <div class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 p-2 rounded-lg mr-3">
+                                <i class="fa-solid fa-code text-lg"></i>
                             </div>
-                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
-                                <span class="px-3 py-2 text-blue-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-linkedin"></i></span>
-                                <input type="text" id="social-linkedin" placeholder="LinkedIn Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
-                            </div>
+                            <h2 class="text-xl font-bold">Skills & Tools</h2>
                         </div>
-                    </div>
-                
-                    <!-- ۴. آمارهای گیت‌هاب (Stats) -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">4. GitHub Stats</h3>
-                        <div class="space-y-3 bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-darkBorder rounded-lg p-4">
-                            <div class="flex flex-wrap gap-4">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-cards" class="rounded border-gray-300 text-blue-600" checked>
-                                    <span class="text-sm dark:text-gray-300">Show Stats Card</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-langs" class="rounded border-gray-300 text-blue-600" checked>
-                                    <span class="text-sm dark:text-gray-300">Show Top Languages</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-streak" class="rounded border-gray-300 text-blue-600">
-                                    <span class="text-sm dark:text-gray-300">Show Streak</span>
-                                </label>
-                            </div>
+                        <div class="space-y-6">
                             
-                            <div class="pt-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Theme</label>
-                                <select id="stat-theme" class="w-full md:w-1/2 bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
-                                    <option value="radical">Radical</option>
-                                    <option value="dark">Dark</option>
-                                    <option value="tokyonight">Tokyo Night</option>
-                                    <option value="dracula">Dracula</option>
-                                </select>
+                            <!-- Frontend Skills -->
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">Frontend Development</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="html5" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-html5 text-orange-500"></i><span class="text-sm">HTML5</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="css3" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-css3-alt text-blue-500"></i><span class="text-sm">CSS3</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="javascript" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-js text-yellow-400"></i><span class="text-sm">JavaScript</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="react" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-react text-cyan-400"></i><span class="text-sm">React</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="vuejs" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-vuejs text-green-500"></i><span class="text-sm">Vue.js</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="angular" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-angular text-red-600"></i><span class="text-sm">Angular</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="tailwindcss" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <span class="font-bold text-teal-500 text-xs text-center w-4">TW</span><span class="text-sm">Tailwind</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="bootstrap" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-bootstrap text-purple-600"></i><span class="text-sm">Bootstrap</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="sass" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-sass text-pink-500"></i><span class="text-sm">Sass</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Backend & Languages Skills -->
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">Backend & Languages</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="python" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-python text-blue-400"></i><span class="text-sm">Python</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="cpp" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <span class="font-bold text-blue-600 text-xs text-center w-4">C++</span><span class="text-sm">C++</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="csharp" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <span class="font-bold text-purple-600 text-xs text-center w-4">C#</span><span class="text-sm">C#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="java" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-java text-red-500"></i><span class="text-sm">Java</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="nodejs" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-node-js text-green-600"></i><span class="text-sm">Node.js</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="php" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-php text-indigo-400"></i><span class="text-sm">PHP</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="go" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-golang text-cyan-500"></i><span class="text-sm">Go</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="ruby" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <span class="font-bold text-red-600 text-xs text-center w-4">Rb</span><span class="text-sm">Ruby</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="rust" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-rust text-orange-700"></i><span class="text-sm">Rust</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- DevOps, Database & Tools -->
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">DevOps, DB & Tools</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="git" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-git-alt text-orange-600"></i><span class="text-sm">Git</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="docker" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-docker text-blue-500"></i><span class="text-sm">Docker</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="linux" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-linux text-gray-800 dark:text-gray-300"></i><span class="text-sm">Linux</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="aws" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-aws text-yellow-600"></i><span class="text-sm">AWS</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="mysql" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-solid fa-database text-blue-700"></i><span class="text-sm">MySQL</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="mongodb" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-solid fa-leaf text-green-600"></i><span class="text-sm">MongoDB</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="postgres" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-solid fa-database text-blue-500"></i><span class="text-sm">PostgreSQL</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="figma" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-brands fa-figma text-pink-500"></i><span class="text-sm">Figma</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 cursor-pointer p-2 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                                        <input type="checkbox" value="firebase" class="skill-checkbox rounded text-primary focus:ring-primary w-4 h-4">
+                                        <i class="fa-solid fa-fire text-yellow-500"></i><span class="text-sm">Firebase</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                
-                    <!-- ۵. پروژه‌ها -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">5. Top Project</h3>
-                        <div class="p-4 border border-gray-200 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-[#0d1117]">
-                            <input type="text" id="proj-name" placeholder="Project Name (e.g. go-reverse-tunnel)" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
-                            <input type="text" id="proj-link" placeholder="GitHub Repository URL" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
-                            <input type="text" id="proj-desc" placeholder="Short description of the project" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none dark:text-white">
+                    </section>
+
+                    <!-- Section 3: Social Links -->
+                    <section>
+                        <div class="flex items-center border-b border-gray-200 dark:border-darkBorder pb-3 mb-5">
+                            <div class="bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 p-2 rounded-lg mr-3">
+                                <i class="fa-solid fa-share-nodes text-lg"></i>
+                            </div>
+                            <h2 class="text-xl font-bold">Social & Connect</h2>
                         </div>
-                    </div>
-                
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"><i class="fa-brands fa-github w-5 text-center"></i></span>
+                                <input type="text" id="social-github" placeholder="github_username" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-blue-600 transition-colors"><i class="fa-brands fa-linkedin w-5 text-center"></i></span>
+                                <input type="text" id="social-linkedin" placeholder="linkedin_username" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors"><i class="fa-brands fa-x-twitter w-5 text-center"></i></span>
+                                <input type="text" id="social-twitter" placeholder="twitter_username" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-orange-500 transition-colors"><i class="fa-brands fa-stack-overflow w-5 text-center"></i></span>
+                                <input type="text" id="social-stackoverflow" placeholder="stackoverflow_userid" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-red-600 transition-colors"><i class="fa-brands fa-youtube w-5 text-center"></i></span>
+                                <input type="text" id="social-youtube" placeholder="youtube_channel_name" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                            <div class="flex items-center group">
+                                <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-green-500 transition-colors"><i class="fa-solid fa-globe w-5 text-center"></i></span>
+                                <input type="url" id="portfolio" placeholder="https://your-portfolio.com" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 4: GitHub Stats & Add-ons -->
+                    <section>
+                        <div class="flex items-center border-b border-gray-200 dark:border-darkBorder pb-3 mb-5">
+                            <div class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-2 rounded-lg mr-3">
+                                <i class="fa-solid fa-chart-pie text-lg"></i>
+                            </div>
+                            <h2 class="text-xl font-bold">GitHub Stats & Add-ons</h2>
+                        </div>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 mb-6">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3"><i class="fa-solid fa-circle-info mr-1"></i> Requires your GitHub username above to work.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="stat-cards" class="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300">
+                                    <span class="font-medium">Show GitHub Stats Card</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="stat-langs" class="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300">
+                                    <span class="font-medium">Show Top Languages</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="stat-streak" class="w-5 h-5 rounded text-primary focus:ring-primary border-gray-300">
+                                    <span class="font-medium">Show Commit Streak</span>
+                                </label>
+                                <div class="flex items-center space-x-2">
+                                    <label class="text-sm font-medium whitespace-nowrap">Stats Theme:</label>
+                                    <select id="stat-theme" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-2 py-1 text-sm outline-none focus:ring-2 focus:ring-primary">
+                                        <option value="default">Default</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="radical">Radical</option>
+                                        <option value="tokyonight">Tokyo Night</option>
+                                        <option value="dracula">Dracula</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Support / Donate -->
+                        <div class="mt-4">
+                            <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">Support / Donate</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex items-center group">
+                                    <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-yellow-500 transition-colors"><i class="fa-solid fa-mug-hot w-5 text-center"></i></span>
+                                    <input type="text" id="donate-bmc" placeholder="BuyMeACoffee username" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div class="flex items-center group">
+                                    <span class="bg-gray-100 dark:bg-gray-800 border border-r-0 border-gray-300 dark:border-gray-600 px-3 py-2 rounded-l-lg text-gray-600 dark:text-gray-400 group-hover:text-red-400 transition-colors"><i class="fa-solid fa-heart w-5 text-center"></i></span>
+                                    <input type="text" id="donate-kofi" placeholder="Ko-fi username" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-r-lg px-3 py-2 focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </form>
-
             </div>
-        </section>
-
-        <!-- ستون سمت راست: پیش‌نمایش -->
-        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
-            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-eye text-green-500"></i>
-                    Live Preview
-                </div>
-                <!-- دکمه‌های کپی و دانلود -->
-                <div class="flex gap-2">
-                    <button id="copyBtn" class="text-xs md:text-sm px-3 py-1.5 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded transition-colors flex items-center gap-1">
-                        <i class="fa-solid fa-copy"></i> <span class="hidden md:inline">Copy Markdown</span>
-                    </button>
-                    <button id="downloadBtn" class="text-xs md:text-sm px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded transition-colors flex items-center gap-1">
-                        <i class="fa-solid fa-download"></i> <span class="hidden md:inline">Download .md</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- محتوای پیش‌نمایش (اسکرول مجزا) -->
-            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-[#0d1117]" id="preview-container">
-                <div class="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 space-y-3 border-2 border-dashed border-gray-200 dark:border-darkBorder rounded-lg p-10">
-                    <i class="fa-brands fa-markdown text-4xl"></i>
-                    <p>Start typing to generate preview...</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script src="script.js"></script>
-</body>
-</html>
-            background-color: #cbd5e1;
-            border-radius: 10px;
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #30363d;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 text-gray-900 dark:bg-darkBg dark:text-gray-200 h-screen font-sans antialiased flex flex-col overflow-hidden">
-    
-    <!-- هدر سایت -->
-    <header class="border-b border-gray-200 dark:border-darkBorder bg-white dark:bg-darkPanel px-6 py-4 shrink-0">
-        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
-                <i class="fa-brands fa-github text-gray-800 dark:text-white"></i>
-                Profile README Generator
-            </h1>
-            
-            <!-- دکمه ریست کل فرم -->
-            <button id="resetBtn" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 rounded-md transition-colors flex items-center gap-2">
-                <i class="fa-solid fa-rotate-right"></i>
-                <span class="hidden md:inline">Reset</span>
-            </button>
         </div>
-    </header>
 
-    <!-- بخش اصلی: گرید دو ستونه -->
-    <main class="flex-1 p-4 md:p-6 max-w-[1800px] w-full mx-auto grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-0">
+        <!-- Preview & Output (Right Panel - Takes 7 columns) -->
+        <div class="lg:col-span-7 flex flex-col h-full space-y-4">
+            
+            <!-- Output Toolbar -->
+            <div class="bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-200 dark:border-darkBorder p-4 flex flex-wrap gap-3 justify-between items-center transition-colors duration-200">
+                <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm font-medium">
+                    <i class="fa-solid fa-eye mr-2"></i> Live Preview
+                </div>
+                <div class="flex space-x-3">
+                    <button id="copyBtn" class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-white px-4 py-2 rounded-lg font-medium transition flex items-center shadow-sm border border-gray-200 dark:border-gray-700">
+                        <i class="fa-regular fa-copy md:mr-2"></i> <span class="hidden md:inline">Copy Code</span>
+                    </button>
+                    <button id="downloadBtn" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition flex items-center shadow-md">
+                        <i class="fa-solid fa-download md:mr-2"></i> <span class="hidden md:inline">Download .md</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Markdown Render Container -->
+            <div class="bg-white dark:bg-darkCard rounded-xl shadow-sm border border-gray-200 dark:border-darkBorder overflow-y-auto flex-1 transition-colors duration-200 relative">
+                <!-- Mac-like window controls for aesthetic -->
+                <div class="sticky top-0 bg-gray-50 dark:bg-[#0d1117] border-b border-gray-200 dark:border-darkBorder px-4 py-2 flex items-center space-x-2 z-10">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-2 text-xs text-gray-400 font-mono">README.md</span>
+                </div>
+                
+                <div class="p-8">
+                    <div id="preview-container" class="w-full h-full min-h-[400px]">
+                        <!-- Markdown output injected here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <!-- ستون سمت چپ: فرم اطلاعات -->
-        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
-            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center gap-2 shrink-0">
-                <i class="fa-solid fa-pen-to-square text-blue-500"></i>
-                Enter Your Details
-            </div>
-            
-            <!-- محتوای فرم (اسکرول مجزا) -->
-            <div class="p-5 overflow-y-auto flex-1 custom-scrollbar" id="form-container">
-                
-                <form id="readme-form" class="space-y-8">
-                    
-                    <!-- ۱. اطلاعات شخصی -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">1. Personal Info</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                                <input type="text" id="name" placeholder="e.g. John Doe" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                                <input type="text" id="title" placeholder="e.g. Full Stack Developer" value="Full Stack Developer" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">About Me</label>
-                            <textarea id="about" rows="3" placeholder="I am a passionate developer working on awesome projects..." class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white"></textarea>
-                        </div>
-                    </div>
-                
-                    <!-- ۲. مهارت‌ها -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">2. Skills</h3>
-                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3" id="skills-container">
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="python" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-python text-blue-500"></i> Python</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="cpp" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
-                                <span class="text-sm dark:text-gray-300"><i class="fa-solid fa-c text-blue-600"></i> C++</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="javascript" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="html5" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="react" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-react text-cyan-400"></i> React</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <input type="checkbox" value="linux" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-linux text-gray-800 dark:text-gray-100"></i> Linux</span>
-                            </label>
-                        </div>
-                    </div>
-                
-                    <!-- ۳. لینک‌های شبکه‌های اجتماعی -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">3. Social Links</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
-                                <span class="px-3 py-2 text-gray-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-github"></i></span>
-                                <input type="text" id="social-github" placeholder="GitHub Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
-                            </div>
-                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
-                                <span class="px-3 py-2 text-blue-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-linkedin"></i></span>
-                                <input type="text" id="social-linkedin" placeholder="LinkedIn Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- ۴. آمارهای گیت‌هاب (Stats) -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">4. GitHub Stats</h3>
-                        <div class="space-y-3 bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-darkBorder rounded-lg p-4">
-                            <div class="flex flex-wrap gap-4">
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-cards" class="rounded border-gray-300 text-blue-600" checked>
-                                    <span class="text-sm dark:text-gray-300">Show Stats Card</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-langs" class="rounded border-gray-300 text-blue-600" checked>
-                                    <span class="text-sm dark:text-gray-300">Show Top Languages</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="stat-streak" class="rounded border-gray-300 text-blue-600">
-                                    <span class="text-sm dark:text-gray-300">Show Streak</span>
-                                </label>
-                            </div>
-                            
-                            <div class="pt-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Theme</label>
-                                <select id="stat-theme" class="w-full md:w-1/2 bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
-                                    <option value="radical">Radical</option>
-                                    <option value="dark">Dark</option>
-                                    <option value="tokyonight">Tokyo Night</option>
-                                    <option value="dracula">Dracula</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- ۵. پروژه‌ها -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">5. Top Project</h3>
-                        <div class="p-4 border border-gray-200 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-[#0d1117]">
-                            <input type="text" id="proj-name" placeholder="Project Name (e.g. go-reverse-tunnel)" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
-                            <input type="text" id="proj-link" placeholder="GitHub Repository URL" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
-                            <input type="text" id="proj-desc" placeholder="Short description of the project" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none dark:text-white">
-                        </div>
-                    </div>
-                
-                </form>
-
-            </div>
-        </section>
-
-        <!-- ستون سمت راست: پیش‌نمایش -->
-        <section class="bg-white dark:bg-darkPanel border border-gray-200 dark:border-darkBorder rounded-xl flex flex-col overflow-hidden shadow-sm">
-            <div class="bg-gray-100 dark:bg-[#0d1117] px-5 py-3 border-b border-gray-200 dark:border-darkBorder font-semibold flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-eye text-green-500"></i>
-                    Live Preview
-                </div>
-                <!-- دکمه‌های کپی و دانلود -->
-                <div class="flex gap-2">
-                    <button class="text-xs md:text-sm px-3 py-1.5 bg-gray-200 dark:bg-darkBorder hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded transition-colors flex items-center gap-1">
-                        <i class="fa-solid fa-copy"></i> <span class="hidden md:inline">Copy Markdown</span>
-                    </button>
-                    <button class="text-xs md:text-sm px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded transition-colors flex items-center gap-1">
-                        <i class="fa-solid fa-download"></i> <span class="hidden md:inline">Download .md</span>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- محتوای پیش‌نمایش (اسکرول مجزا) -->
-            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-[#0d1117]" id="preview-container">
-                <div class="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 space-y-3 border-2 border-dashed border-gray-200 dark:border-darkBorder rounded-lg p-10">
-                    <i class="fa-brands fa-markdown text-4xl"></i>
-                    <p>در مرحله ۴، پیش‌نمایش زنده Markdown اینجا ظاهر می‌شود...</p>
-                </div>
-            </div>
-        </section>
-
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-darkCard border-t border-gray-200 dark:border-darkBorder mt-auto py-6 transition-colors duration-200">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+            <p>© 2024 Profile README Generator. Built with <i class="fa-solid fa-heart text-red-500 mx-1"></i></p>
+            <div class="flex space-x-4 mt-4 md:mt-0">
+                <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
+                <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Instructions Modal (Hidden by default) -->
+    <div id="helpModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-darkCard rounded-xl shadow-2xl max-w-lg w-full m-4 overflow-hidden transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-darkBorder">
+                <h3 class="text-lg font-bold dark:text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-primary mr-2"></i> How to Use</h3>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 text-gray-600 dark:text-gray-300 text-sm">
+                <p>Welcome to <strong>Pro README Generator</strong>! Creating an amazing GitHub profile is easy:</p>
+                <ol class="list-decimal pl-5 space-y-2">
+                    <li>Fill out the sections in the left panel. None of the fields are strictly mandatory, but <strong>Name</strong> is recommended.</li>
+                    <li>Select the technologies and tools you are familiar with from the <strong>Skills</strong> section.</li>
+                    <li>If you check the <strong>GitHub Stats</strong> options, make sure you have entered your GitHub username in the Social Links section, otherwise the cards won't load.</li>
+                    <li>Watch the live preview update on the right side as you type!</li>
+                    <li>Once you are happy with the result, click <strong>Copy Code</strong> or <strong>Download .md</strong>.</li>
+                    <li>Go to your GitHub profile, create a new repository with the same name as your username, and paste the code into its <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-red-500">README.md</code> file!</li>
+                </ol>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 border-t border-gray-200 dark:border-darkBorder flex justify-end">
+                <button id="gotItBtn" class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition shadow-sm">Got it, let's start!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script connection (ensure script.js is updated next) -->
     <script src="script.js"></script>
+    
+    <!-- Modal Logic -->
+    <script>
+        // Simple logic for the help modal included right in HTML
+        document.addEventListener('DOMContentLoaded', () => {
+            const helpBtn = document.getElementById('helpBtn');
+            const helpModal = document.getElementById('helpModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const gotItBtn = document.getElementById('gotItBtn');
+            const modalContent = helpModal.querySelector('div');
+
+            function openModal() {
+                helpModal.classList.remove('hidden');
+                // Small delay to allow display block to apply before animating opacity
+                setTimeout(() => {
+                    helpModal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                }, 10);
+            }
+
+            function closeModal() {
+                helpModal.classList.add('opacity-0');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    helpModal.classList.add('hidden');
+                }, 300); // Matches duration-300
+            }
+
+            if(helpBtn) helpBtn.addEventListener('click', openModal);
+            if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if(gotItBtn) gotItBtn.addEventListener('click', closeModal);
+            
+            // Close when clicking outside
+            helpModal.addEventListener('click', (e) => {
+                if (e.target === helpModal) closeModal();
+            });
+        });
+    </script>
 </body>
 </html>
