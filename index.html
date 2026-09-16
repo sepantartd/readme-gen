@@ -72,10 +72,117 @@
             
             <!-- محتوای فرم (اسکرول مجزا) -->
             <div class="p-5 overflow-y-auto flex-1 custom-scrollbar" id="form-container">
-                <div class="h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 space-y-3 border-2 border-dashed border-gray-200 dark:border-darkBorder rounded-lg p-10">
-                    <i class="fa-solid fa-clipboard-list text-4xl"></i>
-                    <p>در مرحله ۳، فرم ورود اطلاعات اینجا قرار می‌گیرد...</p>
-                </div>
+                
+                <form id="readme-form" class="space-y-8">
+                    
+                    <!-- ۱. اطلاعات شخصی -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">1. Personal Info</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                                <input type="text" id="name" placeholder="e.g. John Doe" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+                                <input type="text" id="title" placeholder="e.g. Full Stack Developer" value="Full Stack Developer" class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">About Me</label>
+                            <textarea id="about" rows="3" placeholder="I am a passionate developer working on awesome projects..." class="w-full bg-white dark:bg-[#0d1117] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white"></textarea>
+                        </div>
+                    </div>
+                
+                    <!-- ۲. مهارت‌ها -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">2. Skills</h3>
+                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3" id="skills-container">
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="python" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
+                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-python text-blue-500"></i> Python</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="cpp" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked>
+                                <span class="text-sm dark:text-gray-300"><i class="fa-solid fa-c text-blue-600"></i> C++</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="javascript" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-js text-yellow-400"></i> JavaScript</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="html5" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="react" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-react text-cyan-400"></i> React</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-[#0d1117] p-2 rounded border border-gray-200 dark:border-darkBorder hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <input type="checkbox" value="linux" class="skill-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm dark:text-gray-300"><i class="fa-brands fa-linux text-gray-800 dark:text-gray-100"></i> Linux</span>
+                            </label>
+                        </div>
+                    </div>
+                
+                    <!-- ۳. لینک‌های شبکه‌های اجتماعی -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">3. Social Links</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
+                                <span class="px-3 py-2 text-gray-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-github"></i></span>
+                                <input type="text" id="social-github" placeholder="GitHub Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
+                            </div>
+                            <div class="flex items-center border border-gray-300 dark:border-darkBorder rounded bg-white dark:bg-[#0d1117] overflow-hidden focus-within:border-blue-500">
+                                <span class="px-3 py-2 text-blue-500 border-r border-gray-300 dark:border-darkBorder"><i class="fa-brands fa-linkedin"></i></span>
+                                <input type="text" id="social-linkedin" placeholder="LinkedIn Username" class="w-full bg-transparent px-3 py-2 text-sm focus:outline-none dark:text-white">
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- ۴. آمارهای گیت‌هاب (Stats) -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">4. GitHub Stats</h3>
+                        <div class="space-y-3 bg-gray-50 dark:bg-[#0d1117] border border-gray-200 dark:border-darkBorder rounded-lg p-4">
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="stat-cards" class="rounded border-gray-300 text-blue-600" checked>
+                                    <span class="text-sm dark:text-gray-300">Show Stats Card</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="stat-langs" class="rounded border-gray-300 text-blue-600" checked>
+                                    <span class="text-sm dark:text-gray-300">Show Top Languages</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="stat-streak" class="rounded border-gray-300 text-blue-600">
+                                    <span class="text-sm dark:text-gray-300">Show Streak</span>
+                                </label>
+                            </div>
+                            
+                            <div class="pt-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Theme</label>
+                                <select id="stat-theme" class="w-full md:w-1/2 bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:text-white">
+                                    <option value="radical">Radical</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="tokyonight">Tokyo Night</option>
+                                    <option value="dracula">Dracula</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- ۵. پروژه‌ها -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 border-b border-gray-200 dark:border-darkBorder pb-2">5. Top Project</h3>
+                        <div class="p-4 border border-gray-200 dark:border-darkBorder rounded-lg bg-gray-50 dark:bg-[#0d1117]">
+                            <input type="text" id="proj-name" placeholder="Project Name (e.g. go-reverse-tunnel)" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
+                            <input type="text" id="proj-link" placeholder="GitHub Repository URL" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm mb-3 focus:outline-none dark:text-white">
+                            <input type="text" id="proj-desc" placeholder="Short description of the project" class="w-full bg-white dark:bg-[#161b22] border border-gray-300 dark:border-darkBorder rounded px-3 py-2 text-sm focus:outline-none dark:text-white">
+                        </div>
+                    </div>
+                
+                </form>
+
             </div>
         </section>
 
